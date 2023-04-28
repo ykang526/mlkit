@@ -7,12 +7,15 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
+import android.widget.ProgressBar
 import android.widget.Spinner
 import androidx.annotation.VisibleForTesting
+import androidx.core.view.isVisible
 import com.google.common.collect.ImmutableMap
 import com.google.common.collect.ImmutableSortedSet
 import com.google.mlkit.samples.vision.digitalink.R
 import com.google.mlkit.vision.digitalink.DigitalInkRecognitionModelIdentifier
+import kotlinx.android.synthetic.main.activity_digital_ink_main_kotlin.*
 import java.util.Locale
 
 /** Main activity which creates a StrokeManager and connects it to the DrawingView. */
@@ -55,7 +58,11 @@ class DigitalInkMainActivity : AppCompatActivity(), StrokeManager.DownloadedMode
   }
 
   fun downloadClick(v: View?) {
-    strokeManager.download()
+    val progressbar = findViewById<ProgressBar>(R.id.progressbar1)
+    progressbar.visibility = View.VISIBLE
+    strokeManager.download().addOnSuccessListener {
+      progressbar.visibility = View.INVISIBLE
+    }
   }
 
   fun recognizeClick(v: View?) {

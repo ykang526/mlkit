@@ -12,7 +12,7 @@
       android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
 
     <activity
-        android:name="com.google.mlkit.samples.vision.digitalink.DigitalInkMainActivity"
+        android:name="com.google.mlkit.samples.vision.digitalink.kotlin.DigitalInkMainActivity"
         android:label="@string/title_activity_main"
         android:exported="true"
         android:screenOrientation="portrait">
