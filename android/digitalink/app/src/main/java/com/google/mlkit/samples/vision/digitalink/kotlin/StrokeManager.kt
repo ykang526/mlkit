@@ -94,6 +94,9 @@ class StrokeManager {
       }
 
       contentChangedListener?.onContentChanged()
+
+      //check problem
+
     }
   }
 

@@ -1,16 +1,15 @@
 package com.google.mlkit.samples.vision.digitalink.kotlin
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.View
-import android.widget.AdapterView
+import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
-import android.widget.ArrayAdapter
-import android.widget.ProgressBar
-import android.widget.Spinner
 import androidx.annotation.VisibleForTesting
 import androidx.core.view.isVisible
+import com.google.android.gms.tasks.Tasks
 import com.google.common.collect.ImmutableMap
 import com.google.common.collect.ImmutableSortedSet
 import com.google.mlkit.samples.vision.digitalink.R
@@ -19,27 +18,31 @@ import kotlinx.android.synthetic.main.activity_digital_ink_main_kotlin.*
 import java.util.Locale
 
 /** Main activity which creates a StrokeManager and connects it to the DrawingView. */
-class DigitalInkMainActivity : AppCompatActivity(), StrokeManager.DownloadedModelsChangedListener {
+class DigitalInkMainActivity : AppCompatActivity(), StrokeManager.DownloadedModelsChangedListener, StrokeManager.ContentChangedListener {
   @JvmField @VisibleForTesting val strokeManager = StrokeManager()
   private lateinit var languageAdapter: ArrayAdapter<ModelLanguageContainer>
-
+  private val problemManager = ProblemManager()
   public override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_digital_ink_main_kotlin)
     val languageSpinner = findViewById<Spinner>(R.id.languages_spinner)
     val drawingView = findViewById<DrawingView>(R.id.drawing_view)
     val statusTextView = findViewById<StatusTextView>(R.id.status_text_view)
+    val problemTextView = findViewById<TextView>(R.id.problemText)
+    problemManager.onCreate(applicationContext)
     drawingView.setStrokeManager(strokeManager)
     statusTextView.setStrokeManager(strokeManager)
     strokeManager.setStatusChangedListener(statusTextView)
     strokeManager.setContentChangedListener(drawingView)
     strokeManager.setDownloadedModelsChangedListener(this)
+    strokeManager.setContentChangedListener(this)
     strokeManager.setClearCurrentInkAfterRecognition(true)
     strokeManager.setTriggerRecognitionAfterInput(false)
     languageAdapter = populateLanguageAdapter()
     languageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
     languageSpinner.adapter = languageAdapter
     strokeManager.refreshDownloadedModelsStatus()
+    problemTextView.text = problemManager.currP.roumaji
 
     languageSpinner.onItemSelectedListener =
       object : OnItemSelectedListener {
@@ -56,15 +59,15 @@ class DigitalInkMainActivity : AppCompatActivity(), StrokeManager.DownloadedMode
       }
     strokeManager.reset()
   }
-
+  fun nextClick(v:View?){
+    problemManager.nextQuestion()
+    problemText.text = problemManager.currP.roumaji
+  }
   fun downloadClick(v: View?) {
-    val progressbar = findViewById<ProgressBar>(R.id.progressbar1)
-    progressbar.visibility = View.VISIBLE
-    strokeManager.download().addOnSuccessListener {
-      progressbar.visibility = View.INVISIBLE
-    }
+    strokeManager.download()
   }
 
+  @SuppressLint("SetTextI18n")
   fun recognizeClick(v: View?) {
     strokeManager.recognize()
   }
@@ -77,6 +80,17 @@ class DigitalInkMainActivity : AppCompatActivity(), StrokeManager.DownloadedMode
 
   fun deleteClick(v: View?) {
     strokeManager.deleteActiveModel()
+  }
+  override fun onContentChanged() {
+    super.onContentChanged()
+    val userContent = strokeManager.getContent()
+    if (userContent.isEmpty()) return
+    val alphabet = userContent.last().text ?: return
+    if (problemManager.compareAnswer(alphabet)) {
+      resultText.text = "Correct!"
+    } else {
+      resultText.text = "Wrong"
+    }
   }
 
   private class ModelLanguageContainer
