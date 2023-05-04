@@ -20,7 +20,7 @@ class ModelManager {
   private var model: DigitalInkRecognitionModel? = null
   var recognizer: DigitalInkRecognizer? = null
   val remoteModelManager = RemoteModelManager.getInstance()
-  fun setModel(languageTag: String): String {
+  fun setModel( languageTag: String): String {
     // Clear the old model and recognizer.
     model = null
     recognizer?.close()
