@@ -252,7 +252,7 @@ class StrokeManager {
     @JvmField
     @VisibleForTesting
     val CONVERSION_TIMEOUT_MS: Long = 1000
-    private const val TAG = "MLKD.StrokeManager"
+    private const val TAG = "StrokeManager"
 
     // This is a constant that is used as a message identifier to trigger the timeout.
     private const val TIMEOUT_TRIGGER = 1

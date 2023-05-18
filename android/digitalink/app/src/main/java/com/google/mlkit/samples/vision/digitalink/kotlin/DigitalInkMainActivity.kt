@@ -20,12 +20,10 @@ import java.util.Locale
 /** Main activity which creates a StrokeManager and connects it to the DrawingView. */
 class DigitalInkMainActivity : AppCompatActivity(), StrokeManager.ContentChangedListener {
   @JvmField @VisibleForTesting val strokeManager = StrokeManager()
-//  private lateinit var languageAdapter: ArrayAdapter<ModelLanguageContainer>
   private val problemManager = ProblemManager()
   public override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_digital_ink_main_kotlin)
-//    val languageSpinner = findViewById<Spinner>(R.id.languages_spinner)
     val drawingView = findViewById<DrawingView>(R.id.drawing_view)
     val statusTextView = findViewById<StatusTextView>(R.id.status_text_view)
     val problemTextView = findViewById<TextView>(R.id.problemText)
@@ -34,29 +32,11 @@ class DigitalInkMainActivity : AppCompatActivity(), StrokeManager.ContentChanged
     statusTextView.setStrokeManager(strokeManager)
     strokeManager.setStatusChangedListener(statusTextView)
     strokeManager.setContentChangedListener(drawingView)
-//    strokeManager.setDownloadedModelsChangedListener(this)
     strokeManager.setContentChangedListener(this)
     strokeManager.setClearCurrentInkAfterRecognition(true)
     strokeManager.setTriggerRecognitionAfterInput(false)
-//    languageAdapter = populateLanguageAdapter()
-//    languageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//    languageSpinner.adapter = languageAdapter
     strokeManager.refreshDownloadedModelsStatus()
     problemTextView.text = problemManager.currP.roumaji
-
-//    languageSpinner.onItemSelectedListener =
-//      object : OnItemSelectedListener {
-//        override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-//          val languageCode =
-//            (parent.adapter.getItem(position) as ModelLanguageContainer).languageTag ?: return
-//          Log.i(TAG, "Selected language: $languageCode")
-//          strokeManager.setActiveModel(languageCode)
-//        }
-//
-//        override fun onNothingSelected(parent: AdapterView<*>?) {
-//          Log.i(TAG, "No language selected")
-//        }
-//      }
 
     strokeManager.setActiveModel("ja")
     strokeManager.download()
@@ -182,14 +162,6 @@ class DigitalInkMainActivity : AppCompatActivity(), StrokeManager.ContentChanged
       modelIdentifier.languageTag
     )
   }
-
-//  override fun onDownloadedModelsChanged(downloadedLanguageTags: Set<String>) {
-//    for (i in 0 until languageAdapter.count) {
-//      val container = languageAdapter.getItem(i)!!
-//      container.downloaded = downloadedLanguageTags.contains(container.languageTag)
-//    }
-//    languageAdapter.notifyDataSetChanged()
-//  }
 
   companion object {
     private const val TAG = "MLKDI.Activity"
