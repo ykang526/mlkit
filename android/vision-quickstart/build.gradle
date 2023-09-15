@@ -3,12 +3,12 @@
 buildscript {
 
     repositories {
-        google()
         mavenCentral()
         mavenLocal()
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.3'
+        classpath 'com.android.tools.build:gradle:7.4.2'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.20'
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -18,9 +18,9 @@ buildscript {
 
 allprojects {
     repositories {
-        google()
         mavenCentral()
         mavenLocal()
+        google()
     }
 }
 
